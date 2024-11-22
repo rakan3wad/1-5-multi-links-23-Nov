@@ -17,7 +17,9 @@ export interface Database {
           url: string
           description: string | null
           user_id: string
-          username: string
+          is_active: boolean
+          order_index: number
+          updated_at: string
         }
         Insert: {
           id?: string
@@ -26,7 +28,9 @@ export interface Database {
           url: string
           description?: string | null
           user_id: string
-          username: string
+          is_active?: boolean
+          order_index?: number
+          updated_at?: string
         }
         Update: {
           id?: string
@@ -35,7 +39,9 @@ export interface Database {
           url?: string
           description?: string | null
           user_id?: string
-          username?: string
+          is_active?: boolean
+          order_index?: number
+          updated_at?: string
         }
       }
       profiles: {

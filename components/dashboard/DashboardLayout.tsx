@@ -105,7 +105,7 @@ export default function DashboardLayout() {
   };
 
   const handleAddLink = async (data: { title: string; url: string; description?: string }) => {
-    if (!user || !username) return;
+    if (!user) return;
 
     try {
       const { data: newLink, error } = await supabase
@@ -116,7 +116,6 @@ export default function DashboardLayout() {
             url: data.url,
             description: data.description || null,
             user_id: user.id,
-            username: username,
             is_active: true
           }
         ])
