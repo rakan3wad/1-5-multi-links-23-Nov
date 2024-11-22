@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
 
 interface AddLinkCardProps {
-  onSave: (data: { title: string; url: string; description: string }) => void;
+  onSave: (data: { title: string; url: string; description?: string }) => void;
   onCancel: () => void;
 }
 
@@ -45,7 +45,7 @@ export default function AddLinkCard({ onSave, onCancel }: AddLinkCardProps) {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-            Title
+            Title <span className="text-red-500">*</span>
           </label>
           <Input
             id="title"
@@ -59,7 +59,7 @@ export default function AddLinkCard({ onSave, onCancel }: AddLinkCardProps) {
 
         <div>
           <label htmlFor="url" className="block text-sm font-medium text-gray-700 mb-1">
-            URL
+            URL <span className="text-red-500">*</span>
           </label>
           <Input
             id="url"
@@ -74,14 +74,13 @@ export default function AddLinkCard({ onSave, onCancel }: AddLinkCardProps) {
 
         <div>
           <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-            Description
+            Description <span className="text-gray-400">(optional)</span>
           </label>
           <Textarea
             id="description"
             placeholder="Enter link description"
             value={formData.description}
             onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-            required
             className="w-full min-h-[100px]"
           />
         </div>

@@ -104,26 +104,29 @@ export default function DashboardLayout() {
     }
   };
 
-  const handleAddLink = async (newLink: Omit<Link, "id" | "created_at" | "user_id">) => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user) return;
+  const handleAddLink = async (data: { title: string; url: string; description?: string }) => {
+    if (!user || !username) return;
 
-      const { data, error } = await supabase
+    try {
+      const { data: newLink, error } = await supabase
         .from("links")
         .insert([
           {
-            ...newLink,
-            user_id: session.user.id,
+            title: data.title,
+            url: data.url,
+            description: data.description || null,
+            user_id: user.id,
+            username: username,
             is_active: true
-          },
+          }
         ])
         .select()
         .single();
 
       if (error) throw error;
-      if (data) {
-        setLinks((prev) => [data, ...prev]);
+
+      if (newLink) {
+        setLinks([newLink, ...links]);
         setIsAddingCard(false);
       }
     } catch (error) {

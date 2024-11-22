@@ -15,7 +15,7 @@ export interface Database {
           created_at: string
           title: string
           url: string
-          description: string
+          description: string | null
           user_id: string
           username: string
         }
@@ -24,7 +24,7 @@ export interface Database {
           created_at?: string
           title: string
           url: string
-          description: string
+          description?: string | null
           user_id: string
           username: string
         }
@@ -33,7 +33,7 @@ export interface Database {
           created_at?: string
           title?: string
           url?: string
-          description?: string
+          description?: string | null
           user_id?: string
           username?: string
         }
