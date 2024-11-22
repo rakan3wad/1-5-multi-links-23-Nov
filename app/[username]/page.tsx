@@ -9,6 +9,10 @@ interface PageProps {
   };
 }
 
+// Disable static page generation to ensure fresh data
+export const revalidate = 0;
+export const dynamic = 'force-dynamic';
+
 export default async function UserProfilePage({ params: { username } }: PageProps) {
   const supabase = createServerComponentClient({ cookies });
 

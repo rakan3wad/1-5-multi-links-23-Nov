@@ -193,14 +193,22 @@ export default function DashboardLayout() {
         .upsert(
           updatedItems.map(item => ({
             id: item.id,
-            order_index: item.order_index
+            order_index: item.order_index,
+            user_id: user?.id,
+            title: item.title,
+            url: item.url,
+            description: item.description,
+            is_active: item.is_active
           }))
         );
 
       if (error) throw error;
+      
+      // Force a router refresh to update the public profile page
+      router.refresh();
     } catch (error) {
       console.error('Error updating order:', error);
-      // Revert the state if there's an error
+      // Revert the state if the update fails
       setLinks(links);
     }
   };
