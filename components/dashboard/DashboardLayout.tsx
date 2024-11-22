@@ -10,6 +10,7 @@ import { Database } from "@/lib/supabase/types";
 import { useRouter } from "next/navigation";
 import { User } from "@supabase/auth-helpers-nextjs";
 import { Button } from "@/components/ui/button";
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
 export type Link = Database["public"]["Tables"]["links"]["Row"];
 
@@ -69,7 +70,7 @@ export default function DashboardLayout() {
           .select("*")
           .eq("user_id", session.user.id)
           .eq("is_active", true)
-          .order("created_at", { ascending: false });
+          .order("order_index", { ascending: true });
 
         if (linksError) throw linksError;
         setLinks(activeLinks || []);
@@ -170,6 +171,40 @@ export default function DashboardLayout() {
     }
   };
 
+  const onDragEnd = async (result: any) => {
+    if (!result.destination) return;
+
+    const items = Array.from(links);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    // Update the order_index for the moved item and affected items
+    const updatedItems = items.map((item, index) => ({
+      ...item,
+      order_index: index
+    }));
+
+    setLinks(updatedItems);
+
+    // Update the order in the database
+    try {
+      const { error } = await supabase
+        .from('links')
+        .upsert(
+          updatedItems.map(item => ({
+            id: item.id,
+            order_index: item.order_index
+          }))
+        );
+
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error updating order:', error);
+      // Revert the state if there's an error
+      setLinks(links);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#79afd9] p-4 sm:p-8">
       <div className="max-w-6xl mx-auto">
@@ -178,72 +213,74 @@ export default function DashboardLayout() {
             <ProfileImage user={user} />
             <div>
               <h1 className="text-2xl font-bold text-gray-900">
-                Welcome, {username || 'User'}
+                {username ? `@${username}` : ''}
               </h1>
-              <p className="text-gray-600">Manage your links</p>
             </div>
           </div>
-          <div className="flex items-center space-x-2">
-            <Button 
-              variant="outline" 
-              onClick={() => {
-                if (username) {
-                  router.push(`/${username}`);
-                }
-              }}
-              disabled={!username}
-            >
-              <Eye className="h-4 w-4 mr-2" />
-              View Profile
-            </Button>
-            <Button variant="outline" onClick={handleLogout}>
-              <LogOut className="h-4 w-4 mr-2" />
-              Sign Out
-            </Button>
-          </div>
-        </div>
-
-        <div className="mb-8">
           <Button
-            onClick={() => setIsAddingCard(true)}
-            className="w-full max-w-2xl flex items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400 transition-colors"
+            variant="outline"
+            className="text-gray-700"
+            onClick={handleLogout}
           >
-            <Plus className="h-5 w-5 mr-2" />
-            Add New Link
+            <LogOut className="h-4 w-4 mr-2" />
+            Logout
           </Button>
         </div>
 
         {isAddingCard && (
-          <div className="mb-8">
-            <AddLinkCard
-              onSave={handleAddLink}
-              onCancel={() => setIsAddingCard(false)}
-            />
-          </div>
+          <AddLinkCard
+            onSave={handleAddLink}
+            onCancel={() => setIsAddingCard(false)}
+          />
         )}
 
-        <div className="space-y-6">
-          {isLoading ? (
-            <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
-              <p className="mt-2 text-gray-600">Loading your links...</p>
-            </div>
-          ) : links.length === 0 ? (
-            <div className="text-center py-12">
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No links yet</h3>
-              <p className="text-gray-600">Add your first link to get started!</p>
-            </div>
-          ) : (
-            links.map((link) => (
-              <LinkCard
-                key={link.id}
-                link={link}
-                onDelete={handleDeleteLink}
-                onEdit={handleEditLink}
-              />
-            ))
-          )}
-        </div>
+        {!isAddingCard && (
+          <Button
+            onClick={() => setIsAddingCard(true)}
+            className="w-full mb-4 bg-white hover:bg-gray-50 text-gray-700 border-dashed border-2 border-gray-300"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add New Link
+          </Button>
+        )}
+
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Droppable droppableId="links">
+            {(provided) => (
+              <div
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+                className="space-y-4"
+              >
+                {links.map((link, index) => (
+                  <Draggable
+                    key={link.id}
+                    draggableId={link.id}
+                    index={index}
+                  >
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        className={`transition-shadow ${
+                          snapshot.isDragging ? 'shadow-lg' : ''
+                        }`}
+                      >
+                        <LinkCard
+                          link={link}
+                          onEdit={handleEditLink}
+                          onDelete={handleDeleteLink}
+                        />
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
       </div>
     </div>
   );
