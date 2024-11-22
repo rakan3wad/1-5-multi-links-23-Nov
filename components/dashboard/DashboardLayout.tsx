@@ -169,8 +169,8 @@ export default function DashboardLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-[#79afd9] p-4 sm:p-8">
+      <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center space-x-4">
             <ProfileImage user={user} />
