@@ -1,31 +1,62 @@
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
-import PublicProfile from '@/components/profile/PublicProfile';
+import { notFound } from "next/navigation";
+import PublicProfile from "@/components/profile/PublicProfile";
+import { createServerClient } from "@/lib/supabase/server";
+import { Database } from "@/lib/supabase/types";
 
-interface PageProps {
-  params: {
-    username: string;
-  };
-}
+type Profile = Database['public']['Tables']['profiles']['Row'];
 
-// Disable static page generation to ensure fresh data
-export const revalidate = 0;
-export const dynamic = 'force-dynamic';
+export default async function UserProfilePage({
+  params,
+}: {
+  params: { username: string };
+}) {
+  const { username } = params;
+  const supabase = createServerClient();
 
-export default async function UserProfilePage({ params: { username } }: PageProps) {
-  const supabase = createServerComponentClient({ cookies });
+  let profile: Profile | null = null;
 
-  // Check if username exists
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('username', username)
+  // First, try to find user by username
+  const { data: usernameProfile, error: usernameError } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("username", username)
     .single();
 
-  if (!profile) {
-    redirect('/');
+  if (usernameProfile) {
+    profile = usernameProfile;
+  } else {
+    // If not found, try to find by email prefix
+    const { data: emailProfile, error: emailError } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("email", `${username}@gmail.com`)
+      .single();
+
+    if (emailProfile) {
+      profile = emailProfile;
+    }
   }
 
-  return <PublicProfile username={username} />;
+  // If no profile found, show 404
+  if (!profile) {
+    console.error('Profile not found:', username);
+    notFound();
+  }
+
+  // Fetch user's links
+  const { data: links } = await supabase
+    .from("links")
+    .select("*")
+    .eq("user_id", profile.id)
+    .eq("is_active", true)
+    .order("order_index", { ascending: true });
+
+  return (
+    <PublicProfile 
+      username={profile.username} 
+      displayName={profile.display_name}
+      avatarUrl={profile.avatar_url}
+      links={links || []} 
+    />
+  );
 }

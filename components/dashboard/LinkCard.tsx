@@ -26,9 +26,10 @@ interface LinkCardProps {
   link: Link;
   onDelete: (id: string) => void;
   onEdit: (id: string, data: { title: string; url: string; description: string }) => void;
+  index: number;
 }
 
-export default function LinkCard({ link, onDelete, onEdit }: LinkCardProps) {
+export default function LinkCard({ link, onDelete, onEdit, index }: LinkCardProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [formData, setFormData] = useState({
@@ -90,7 +91,10 @@ export default function LinkCard({ link, onDelete, onEdit }: LinkCardProps) {
   }
 
   return (
-    <>
+    <div className="relative">
+      <div className="absolute -left-10 top-1/2 -translate-y-1/2 flex items-center justify-center w-8 h-8 rounded-full bg-gray-800 text-white font-semibold">
+        {index + 1}
+      </div>
       <Card className="w-full max-w-2xl p-6 relative group hover:shadow-lg transition-shadow duration-200">
         <div className="flex items-start space-x-4">
           <div className="text-gray-400 mt-1 opacity-50 group-hover:opacity-100">
@@ -171,6 +175,6 @@ export default function LinkCard({ link, onDelete, onEdit }: LinkCardProps) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </>
+    </div>
   );
 }

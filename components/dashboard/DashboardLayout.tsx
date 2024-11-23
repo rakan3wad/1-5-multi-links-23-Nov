@@ -10,6 +10,7 @@ import { Database } from "@/lib/supabase/types";
 import { useRouter } from "next/navigation";
 import { User } from "@supabase/auth-helpers-nextjs";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 
 export type Link = Database["public"]["Tables"]["links"]["Row"];
@@ -193,30 +194,23 @@ export default function DashboardLayout() {
         .upsert(
           updatedItems.map(item => ({
             id: item.id,
-            order_index: item.order_index,
-            user_id: user?.id,
-            title: item.title,
-            url: item.url,
-            description: item.description,
-            is_active: item.is_active
+            order_index: item.order_index
           }))
         );
 
       if (error) throw error;
-      
-      // Force a router refresh to update the public profile page
-      router.refresh();
     } catch (error) {
       console.error('Error updating order:', error);
-      // Revert the state if the update fails
+      // Revert the state if there's an error
       setLinks(links);
     }
   };
 
   return (
     <div className="min-h-screen bg-[#79afd9] p-4 sm:p-8">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
+      <div className="container mx-auto px-4 max-w-3xl">
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-8 space-y-4 sm:space-y-0">
           <div className="flex items-center space-x-4">
             <ProfileImage user={user} />
             <div>
@@ -225,70 +219,104 @@ export default function DashboardLayout() {
               </h1>
             </div>
           </div>
-          <Button
-            variant="outline"
-            className="text-gray-700"
-            onClick={handleLogout}
-          >
-            <LogOut className="h-4 w-4 mr-2" />
-            Logout
-          </Button>
+          <div className="flex items-center space-x-4">
+            <Button
+              variant="outline"
+              onClick={() => window.open(`/${username}`, '_blank')}
+              className="flex items-center space-x-2 text-gray-700"
+            >
+              <Eye className="h-4 w-4" />
+              <span className="hidden sm:inline">View Profile</span>
+            </Button>
+            <Button
+              variant="outline"
+              className="flex items-center space-x-2 text-gray-700"
+              onClick={handleLogout}
+            >
+              <LogOut className="h-4 w-4" />
+              <span className="hidden sm:inline">Logout</span>
+            </Button>
+          </div>
         </div>
 
-        {isAddingCard && (
-          <AddLinkCard
-            onSave={handleAddLink}
-            onCancel={() => setIsAddingCard(false)}
-          />
-        )}
-
+        {/* Add Link Button */}
         {!isAddingCard && (
-          <Button
-            onClick={() => setIsAddingCard(true)}
-            className="w-full mb-4 bg-white hover:bg-gray-50 text-gray-700 border-dashed border-2 border-gray-300"
-          >
-            <Plus className="h-4 w-4 mr-2" />
-            Add New Link
-          </Button>
+          <div className="mb-8">
+            <Button
+              onClick={() => setIsAddingCard(true)}
+              className="w-full bg-white hover:bg-gray-50 text-gray-700 border-dashed border-2 border-gray-300"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Add New Link
+            </Button>
+          </div>
         )}
 
-        <DragDropContext onDragEnd={onDragEnd}>
-          <Droppable droppableId="links">
-            {(provided) => (
-              <div
-                {...provided.droppableProps}
-                ref={provided.innerRef}
-                className="space-y-4"
-              >
-                {links.map((link, index) => (
-                  <Draggable
-                    key={link.id}
-                    draggableId={link.id}
-                    index={index}
-                  >
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                        className={`transition-shadow ${
-                          snapshot.isDragging ? 'shadow-lg' : ''
-                        }`}
-                      >
-                        <LinkCard
-                          link={link}
-                          onEdit={handleEditLink}
-                          onDelete={handleDeleteLink}
-                        />
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
+        {/* Add Link Card */}
+        {isAddingCard && (
+          <div className="mb-8">
+            <AddLinkCard
+              onSave={handleAddLink}
+              onCancel={() => setIsAddingCard(false)}
+            />
+          </div>
+        )}
+
+        {/* Links Section */}
+        <div className="pl-12 relative">
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="links">
+              {(provided) => (
+                <div
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                  className="space-y-4"
+                >
+                  {links.map((link, index) => (
+                    <Draggable
+                      key={link.id}
+                      draggableId={link.id}
+                      index={index}
+                    >
+                      {(provided, snapshot) => (
+                        <div
+                          ref={provided.innerRef}
+                          {...provided.draggableProps}
+                          {...provided.dragHandleProps}
+                          className={`transition-shadow ${
+                            snapshot.isDragging ? 'shadow-lg' : ''
+                          }`}
+                        >
+                          <LinkCard
+                            link={link}
+                            onEdit={handleEditLink}
+                            onDelete={handleDeleteLink}
+                            index={index}
+                          />
+                        </div>
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
+        </div>
+
+        {/* Empty State */}
+        {links.length === 0 && !isAddingCard && (
+          <Card className="mt-8 text-center py-12">
+            <CardContent>
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold">No links yet</h3>
+                <p className="text-muted-foreground">
+                  Add your first link to get started!
+                </p>
               </div>
-            )}
-          </Droppable>
-        </DragDropContext>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );
