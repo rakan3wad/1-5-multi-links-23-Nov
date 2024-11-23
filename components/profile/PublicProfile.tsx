@@ -46,7 +46,7 @@ export default function PublicProfile({ username, displayName, avatarUrl, links 
           <CardHeader className="text-center">
             <div className="flex justify-center mb-4">
               <Avatar className="w-24 h-24">
-                <AvatarImage src={avatarUrl || undefined} alt={username} />
+                <AvatarImage src={avatarUrl || undefined} alt={username} className="object-cover" />
                 <AvatarFallback className="text-2xl bg-primary text-primary-foreground">
                   {username.slice(0, 2).toUpperCase()}
                 </AvatarFallback>
