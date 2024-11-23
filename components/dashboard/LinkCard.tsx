@@ -67,20 +67,20 @@ export default function LinkCard({ link, onDelete, onEdit, index }: LinkCardProp
             type="text"
             value={formData.title}
             onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded font-tajawal"
             placeholder="Title"
           />
           <input
             type="url"
             value={formData.url}
             onChange={(e) => setFormData(prev => ({ ...prev, url: e.target.value }))}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded font-tajawal"
             placeholder="URL"
           />
           <textarea
             value={formData.description}
             onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border rounded font-tajawal"
             placeholder="Description"
             rows={3}
           />
@@ -119,19 +119,19 @@ export default function LinkCard({ link, onDelete, onEdit, index }: LinkCardProp
                         className="w-4 h-4 object-contain"
                       />
                     )}
-                    <h3 className="text-xl font-semibold text-gray-900">{link.title}</h3>
+                    <h3 className="text-lg font-semibold font-tajawal">{link.title}</h3>
                   </div>
                   <a 
                     href={link.url} 
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    className="text-sm text-blue-500 hover:text-blue-700 break-all mb-2 flex items-center"
+                    className="text-sm text-blue-500 hover:text-blue-700 break-all mb-2 flex items-center font-tajawal"
                   >
                     {link.url}
                     <ExternalLink className="h-4 w-4 ml-1 inline" />
                   </a>
                   {link.description && (
-                    <p className="text-sm text-gray-600 mt-2">{link.description}</p>
+                    <p className="text-gray-600 text-sm mt-1 font-tajawal">{link.description}</p>
                   )}
                 </div>
                 <DropdownMenu>
@@ -157,7 +157,7 @@ export default function LinkCard({ link, onDelete, onEdit, index }: LinkCardProp
               </div>
               
               <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                <div className="text-sm text-gray-500">
+                <div className="text-sm text-gray-500 font-tajawal">
                   Added {new Date(link.created_at).toLocaleDateString()}
                 </div>
               </div>

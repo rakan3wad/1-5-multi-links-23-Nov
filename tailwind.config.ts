@@ -18,7 +18,7 @@ const config: Config = {
     },
     extend: {
       fontFamily: {
-        sans: ['var(--font-tajawal)', 'sans-serif'],
+        sans: ['var(--font-tajawal)', 'ui-sans-serif', 'system-ui', '-apple-system', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'],
         inter: ['var(--font-inter)'],
         arabic: ['var(--font-arabic)'],
         tajawal: ['var(--font-tajawal)'],
