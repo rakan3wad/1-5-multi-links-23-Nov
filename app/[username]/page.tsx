@@ -18,7 +18,7 @@ export default async function UserProfilePage({
   // First, try to find user by username
   const { data: usernameProfile, error: usernameError } = await supabase
     .from("profiles")
-    .select("*")
+    .select("id, display_name, avatar_url, bio")
     .eq("username", username)
     .single();
 
@@ -28,7 +28,7 @@ export default async function UserProfilePage({
     // If not found, try to find by email prefix
     const { data: emailProfile, error: emailError } = await supabase
       .from("profiles")
-      .select("*")
+      .select("id, display_name, avatar_url, bio")
       .eq("email", `${username}@gmail.com`)
       .single();
 
@@ -53,9 +53,10 @@ export default async function UserProfilePage({
 
   return (
     <PublicProfile 
-      username={profile.username} 
+      username={username} 
       displayName={profile.display_name}
       avatarUrl={profile.avatar_url}
+      bio={profile.bio}
       links={links || []} 
     />
   );

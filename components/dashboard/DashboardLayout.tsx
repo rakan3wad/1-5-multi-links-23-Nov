@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { Plus, LogOut, ExternalLink, Edit2, Trash2, Eye } from "lucide-react";
+import { Plus, LogOut, ExternalLink, Edit2, Trash2, Eye, Pencil } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import AddLinkCard from "./AddLinkCard";
 import LinkCard from "./LinkCard";
@@ -23,6 +23,8 @@ export default function DashboardLayout() {
   const [user, setUser] = useState<User | null>(null);
   const [username, setUsername] = useState<string | null>(null);
   const [displayName, setDisplayName] = useState<string | null>(null);
+  const [bio, setBio] = useState<string | null>(null);
+  const [isEditingBio, setIsEditingBio] = useState(false);
   const supabase = createClient();
 
   useEffect(() => {
@@ -40,13 +42,14 @@ export default function DashboardLayout() {
         // Fetch profile data
         const { data: profileData } = await supabase
           .from("profiles")
-          .select("username, display_name")
+          .select("username, display_name, bio")
           .eq("id", session.user.id)
           .single();
 
         if (profileData) {
           setUsername(profileData.username);
           setDisplayName(profileData.display_name);
+          setBio(profileData.bio);
         } else {
           // If username is not set, update it with email prefix
           const defaultUsername = session.user.email?.split('@')[0];
@@ -174,6 +177,25 @@ export default function DashboardLayout() {
     }
   };
 
+  const handleBioUpdate = async (newBio: string) => {
+    if (!user) return;
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({ 
+          bio: newBio,
+          updated_at: new Date().toISOString()
+        })
+        .eq("id", user.id);
+
+      if (error) throw error;
+      setBio(newBio);
+      setIsEditingBio(false);
+    } catch (error) {
+      console.error("Error updating bio:", error);
+    }
+  };
+
   const onDragEnd = async (result: any) => {
     if (!result.destination) return;
 
@@ -213,18 +235,37 @@ export default function DashboardLayout() {
       <div className="container mx-auto px-4 max-w-3xl">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-center mb-8 space-y-4 sm:space-y-0">
-          <div className="flex items-center space-x-4">
-            <ProfileImage user={user} />
-            <div className="flex flex-col">
-              {displayName && (
-                <h1 className="text-2xl font-bold text-gray-900">
-                  {displayName}
-                </h1>
-              )}
-              {username && (
-                <p className="text-gray-600">
-                  @{username}
-                </p>
+          <div className="flex flex-col items-center justify-center mb-6">
+            <ProfileImage user={user} onImageUpdate={() => {}} />
+            <h2 className="text-xl font-semibold mt-4">{displayName}</h2>
+            <p className="text-gray-600">@{username}</p>
+            <div className="relative mt-2 group">
+              {isEditingBio ? (
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={bio || ""}
+                    onChange={(e) => setBio(e.target.value)}
+                    onBlur={() => handleBioUpdate(bio || "")}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleBioUpdate(bio || "");
+                      }
+                    }}
+                    className="px-3 py-1 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
+                    placeholder="Add a bio..."
+                    autoFocus
+                  />
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 cursor-pointer" onClick={() => setIsEditingBio(true)}>
+                  <p className="text-gray-600 text-sm">{bio || "Add a bio..."}</p>
+                  <button
+                    className="opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <Pencil className="h-4 w-4 text-gray-500" />
+                  </button>
+                </div>
               )}
             </div>
           </div>
