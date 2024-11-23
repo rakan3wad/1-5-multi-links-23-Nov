@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { Plus, LogOut, ExternalLink, Edit2, Trash2, Eye, Pencil } from "lucide-react";
+import { Plus, LogOut, ExternalLink, Edit2, Trash2, Eye, Pencil, Check } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import AddLinkCard from "./AddLinkCard";
 import LinkCard from "./LinkCard";
@@ -25,6 +25,7 @@ export default function DashboardLayout() {
   const [displayName, setDisplayName] = useState<string | null>(null);
   const [bio, setBio] = useState<string | null>(null);
   const [isEditingBio, setIsEditingBio] = useState(false);
+  const [bgColor, setBgColor] = useState('#79afd9');
   const supabase = createClient();
 
   useEffect(() => {
@@ -101,6 +102,13 @@ export default function DashboardLayout() {
       subscription.unsubscribe();
     };
   }, [router, supabase]);
+
+  useEffect(() => {
+    const savedColor = localStorage.getItem('dashboardBgColor');
+    if (savedColor) {
+      setBgColor(savedColor);
+    }
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -196,6 +204,12 @@ export default function DashboardLayout() {
     }
   };
 
+  const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newColor = e.target.value;
+    setBgColor(newColor);
+    localStorage.setItem('dashboardBgColor', newColor);
+  };
+
   const onDragEnd = async (result: any) => {
     if (!result.destination) return;
 
@@ -231,7 +245,7 @@ export default function DashboardLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-[#79afd9] p-4 sm:p-8">
+    <div className="min-h-screen" style={{ backgroundColor: bgColor }}>
       <div className="container mx-auto px-4 max-w-3xl">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-center mb-8 space-y-4 sm:space-y-0">
@@ -256,6 +270,13 @@ export default function DashboardLayout() {
                     placeholder="Add a bio..."
                     autoFocus
                   />
+                  <button 
+                    onClick={() => handleBioUpdate(bio || "")}
+                    className="justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 flex items-center space-x-2 text-gray-700"
+                  >
+                    <Check className="h-4 w-4" />
+                    <span className="hidden sm:inline">Confirm</span>
+                  </button>
                 </div>
               ) : (
                 <div className="flex items-center gap-2 cursor-pointer" onClick={() => setIsEditingBio(true)}>
@@ -274,8 +295,17 @@ export default function DashboardLayout() {
               className="flex items-center space-x-2 text-gray-700"
             >
               <Eye className="h-4 w-4" />
-              <span className="hidden sm:inline">View Profile</span>
+              <span className="font-tajawal">View Profile</span>
             </Button>
+            <div className="flex items-center space-x-2">
+              <input
+                type="color"
+                value={bgColor}
+                onChange={handleColorChange}
+                className="w-8 h-8 rounded-md cursor-pointer border border-gray-300"
+                title="Change background color"
+              />
+            </div>
           </div>
         </div>
 
@@ -284,7 +314,7 @@ export default function DashboardLayout() {
           <div className="mb-8">
             <Button
               onClick={() => setIsAddingCard(true)}
-              className="w-full bg-white hover:bg-gray-50 text-gray-700 border-dashed border-2 border-gray-300"
+              className="w-full bg-white hover:bg-gray-50 text-gray-700 border-dashed border-2 border-gray-300 font-tajawal"
             >
               <Plus className="h-4 w-4 mr-2" />
               Add New Link

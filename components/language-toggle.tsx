@@ -54,14 +54,14 @@ export function LanguageToggle() {
         onClick={toggleLanguage}
         variant="ghost"
         size="sm"
-        className="h-8 w-8 px-0 bg-white/10 hover:bg-white/20 backdrop-blur-sm"
+        className="h-8 w-8 px-0 bg-white/10 hover:bg-white/20 backdrop-blur-sm font-tajawal"
       >
         {lang === 'en' ? 'عربي' : 'En'}
       </Button>
       <Button
         onClick={handleLogout}
         variant="ghost"
-        className="justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:text-accent-foreground h-10 px-4 py-2 flex items-center space-x-2 text-gray-700 bg-white/10 hover:bg-white/20 backdrop-blur-sm"
+        className="justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:text-accent-foreground h-10 px-4 py-2 flex items-center space-x-2 text-gray-700 bg-white/10 hover:bg-white/20 backdrop-blur-sm font-tajawal"
       >
         <LogOut className="h-4 w-4" />
         <span className="hidden sm:inline">Logout</span>
