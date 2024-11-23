@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from "react";
-import { Plus, LogOut, ExternalLink, Edit2, Trash2, Eye, Pencil, Check } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import { Plus, LogOut, ExternalLink, Edit2, Trash2, Eye, Pencil, Check, Palette } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import AddLinkCard from "./AddLinkCard";
 import LinkCard from "./LinkCard";
@@ -25,7 +25,8 @@ export default function DashboardLayout() {
   const [displayName, setDisplayName] = useState<string | null>(null);
   const [bio, setBio] = useState<string | null>(null);
   const [isEditingBio, setIsEditingBio] = useState(false);
-  const [bgColor, setBgColor] = useState('#79afd9');
+  const [bgColor, setBgColor] = useState("#ffffff");
+  const colorInputRef = useRef<HTMLInputElement>(null);
   const supabase = createClient();
 
   useEffect(() => {
@@ -210,6 +211,10 @@ export default function DashboardLayout() {
     localStorage.setItem('dashboardBgColor', newColor);
   };
 
+  const handlePaletteClick = () => {
+    colorInputRef.current?.click();
+  };
+
   const onDragEnd = async (result: any) => {
     if (!result.destination) return;
 
@@ -298,13 +303,25 @@ export default function DashboardLayout() {
               <span className="font-tajawal">View Profile</span>
             </Button>
             <div className="flex items-center space-x-2">
-              <input
-                type="color"
-                value={bgColor}
-                onChange={handleColorChange}
-                className="w-8 h-8 rounded-md cursor-pointer border border-gray-300"
-                title="Change background color"
-              />
+              <div className="relative">
+                <input
+                  ref={colorInputRef}
+                  type="color"
+                  value={bgColor}
+                  onChange={handleColorChange}
+                  className="w-8 h-8 opacity-0 absolute inset-0 cursor-pointer"
+                  title="Change background color"
+                />
+                <div 
+                  onClick={handlePaletteClick}
+                  className="w-8 h-8 rounded-md border border-gray-300 bg-white cursor-pointer flex items-center justify-center"
+                  style={{ backgroundColor: bgColor }}
+                >
+                  <div className="flex items-center justify-center bg-black/50 rounded-md w-full h-full">
+                    <Palette className="h-4 w-4 text-white" />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
