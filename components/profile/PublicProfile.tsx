@@ -61,13 +61,13 @@ export default function PublicProfile({ username, displayName, avatarUrl, bio, l
             </div>
             <div className="text-center">
               {displayName && (
-                <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                <h1 className="text-4xl font-bold text-gray-900 mb-2 font-tajawal">
                   {displayName}
                 </h1>
               )}
-              <div className="text-lg text-gray-800 mb-3">@{username}</div>
+              <div className="text-lg text-gray-800 mb-3 font-tajawal">@{username}</div>
               {bio && (
-                <p className="text-gray-800 max-w-md mx-auto">
+                <p className="text-gray-800 max-w-md mx-auto font-tajawal">
                   {bio}
                 </p>
               )}
