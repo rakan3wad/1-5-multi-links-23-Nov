@@ -238,7 +238,7 @@ export default function DashboardLayout() {
           <div className="flex flex-col items-center justify-center mb-6">
             <ProfileImage user={user} onImageUpdate={() => {}} />
             <h2 className="text-xl font-semibold mt-4">{displayName}</h2>
-            <p className="text-gray-600">@{username}</p>
+            <p className="text-gray-900">@{username}</p>
             <div className="relative mt-2 group">
               {isEditingBio ? (
                 <div className="flex items-center gap-2">
@@ -259,11 +259,9 @@ export default function DashboardLayout() {
                 </div>
               ) : (
                 <div className="flex items-center gap-2 cursor-pointer" onClick={() => setIsEditingBio(true)}>
-                  <p className="text-gray-600 text-sm">{bio || "Add a bio..."}</p>
-                  <button
-                    className="opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <Pencil className="h-4 w-4 text-gray-500" />
+                  <p className="text-gray-900 text-sm">{bio || "Add a bio..."}</p>
+                  <button>
+                    <Pencil className="h-4 w-4 text-gray-900" />
                   </button>
                 </div>
               )}

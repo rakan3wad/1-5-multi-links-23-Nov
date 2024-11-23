@@ -43,21 +43,35 @@ export default function PublicProfile({ username, displayName, avatarUrl, bio, l
     <div className="min-h-screen bg-[#79afd9]">
       <div className="container mx-auto px-4 py-16 max-w-4xl">
         {/* Profile Header */}
-        <div className="mb-8">
-          <div className="text-center">
-            <div className="flex justify-center mb-4">
-              <Avatar className="w-24 h-24">
-                <AvatarImage src={avatarUrl || undefined} alt={username} className="object-cover" />
-                <AvatarFallback className="text-2xl bg-primary text-primary-foreground">
-                  {username.slice(0, 2).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
+        <div className="mb-12">
+          <div className="flex flex-col items-center">
+            <div className="mb-6">
+              <div className="relative">
+                <Avatar className="w-32 h-32 border-4 border-white shadow-lg">
+                  <AvatarImage 
+                    src={avatarUrl || undefined} 
+                    alt={username} 
+                    className="object-cover rounded-full"
+                  />
+                  <AvatarFallback className="text-3xl bg-primary text-primary-foreground">
+                    {username.slice(0, 2).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+              </div>
             </div>
-            <div className="text-3xl font-semibold tracking-tight">
-              {displayName && <div className="mb-1">{displayName}</div>}
-              <div className="text-gray-800">@{username}</div>
+            <div className="text-center">
+              {displayName && (
+                <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                  {displayName}
+                </h1>
+              )}
+              <div className="text-lg text-gray-800 mb-3">@{username}</div>
+              {bio && (
+                <p className="text-gray-800 max-w-md mx-auto">
+                  {bio}
+                </p>
+              )}
             </div>
-            {bio && <p className="text-sm text-gray-800 mt-2">{bio}</p>}
           </div>
         </div>
 
