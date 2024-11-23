@@ -55,10 +55,9 @@ export default function PublicProfile({ username, displayName, avatarUrl, bio, l
             </div>
             <div className="text-3xl font-semibold tracking-tight">
               {displayName && <div className="mb-1">{displayName}</div>}
-              <div className="text-muted-foreground">@{username}</div>
+              <div className="text-gray-800">@{username}</div>
             </div>
-            {bio && <p className="text-sm text-muted-foreground mt-2">{bio}</p>}
-            <p className="text-sm text-muted-foreground mt-2">My Collection of Links</p>
+            {bio && <p className="text-sm text-gray-800 mt-2">{bio}</p>}
           </div>
         </div>
 
