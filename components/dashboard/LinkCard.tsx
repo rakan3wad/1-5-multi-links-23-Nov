@@ -48,10 +48,6 @@ export default function LinkCard({ link, onDelete, onEdit, index }: LinkCardProp
     setShowDeleteDialog(false);
   };
 
-  const handleVisit = () => {
-    window.open(link.url, '_blank');
-  };
-
   if (isEditing) {
     return (
       <Card className="p-4">
@@ -144,15 +140,6 @@ export default function LinkCard({ link, onDelete, onEdit, index }: LinkCardProp
                 <div className="text-sm text-gray-500">
                   Added {new Date(link.created_at).toLocaleDateString()}
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="ml-2"
-                  onClick={handleVisit}
-                >
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  Visit Link
-                </Button>
               </div>
             </div>
           </div>

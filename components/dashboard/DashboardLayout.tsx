@@ -22,6 +22,7 @@ export default function DashboardLayout() {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
   const [username, setUsername] = useState<string | null>(null);
+  const [displayName, setDisplayName] = useState<string | null>(null);
   const supabase = createClient();
 
   useEffect(() => {
@@ -39,12 +40,13 @@ export default function DashboardLayout() {
         // Fetch profile data
         const { data: profileData } = await supabase
           .from("profiles")
-          .select("username")
+          .select("username, display_name")
           .eq("id", session.user.id)
           .single();
 
-        if (profileData?.username) {
+        if (profileData) {
           setUsername(profileData.username);
+          setDisplayName(profileData.display_name);
         } else {
           // If username is not set, update it with email prefix
           const defaultUsername = session.user.email?.split('@')[0];
@@ -213,10 +215,17 @@ export default function DashboardLayout() {
         <div className="flex flex-col sm:flex-row justify-between items-center mb-8 space-y-4 sm:space-y-0">
           <div className="flex items-center space-x-4">
             <ProfileImage user={user} />
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">
-                {username ? `@${username}` : ''}
-              </h1>
+            <div className="flex flex-col">
+              {displayName && (
+                <h1 className="text-2xl font-bold text-gray-900">
+                  {displayName}
+                </h1>
+              )}
+              {username && (
+                <p className="text-gray-600">
+                  @{username}
+                </p>
+              )}
             </div>
           </div>
           <div className="flex items-center space-x-4">
