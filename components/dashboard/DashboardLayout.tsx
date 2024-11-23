@@ -32,63 +32,28 @@ export default function DashboardLayout() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        
-        if (!session?.user) {
-          router.replace("/auth");
-          return;
-        }
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          setUser(user);
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('username, display_name, bio, background_color')
+            .eq('id', user.id)
+            .single();
 
-        setUser(session.user);
-
-        // Fetch profile data
-        const { data: profileData } = await supabase
-          .from("profiles")
-          .select("username, display_name, bio")
-          .eq("id", session.user.id)
-          .single();
-
-        if (profileData) {
-          setUsername(profileData.username);
-          setDisplayName(profileData.display_name);
-          setBio(profileData.bio);
-        } else {
-          // If username is not set, update it with email prefix
-          const defaultUsername = session.user.email?.split('@')[0];
-          if (defaultUsername) {
-            const { data: updatedProfile, error: updateError } = await supabase
-              .from("profiles")
-              .update({ 
-                username: defaultUsername,
-                updated_at: new Date().toISOString()
-              })
-              .eq("id", session.user.id)
-              .select("username")
-              .single();
-
-            if (!updateError && updatedProfile) {
-              setUsername(updatedProfile.username);
-            }
+          if (profile) {
+            setUsername(profile.username);
+            setDisplayName(profile.display_name);
+            setBio(profile.bio);
+            // Set background color from profile, fallback to localStorage or default white
+            const savedColor = localStorage.getItem('dashboardBgColor');
+            setBgColor(profile.background_color || savedColor || '#ffffff');
           }
         }
-
-        // Fetch active links
-        const { data: activeLinks, error: linksError } = await supabase
-          .from("links")
-          .select("*")
-          .eq("user_id", session.user.id)
-          .eq("is_active", true)
-          .order("order_index", { ascending: true });
-
-        if (linksError) throw linksError;
-        setLinks(activeLinks || []);
       } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setIsLoading(false);
+        console.error('Error fetching user data:', error);
       }
     };
-
     fetchData();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -205,10 +170,26 @@ export default function DashboardLayout() {
     }
   };
 
-  const handleColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleColorChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const newColor = e.target.value;
     setBgColor(newColor);
     localStorage.setItem('dashboardBgColor', newColor);
+    
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { error } = await supabase
+          .from('profiles')
+          .update({ background_color: newColor })
+          .eq('id', user.id);
+          
+        if (error) {
+          console.error('Error updating background color:', error);
+        }
+      }
+    } catch (error) {
+      console.error('Error updating background color:', error);
+    }
   };
 
   const handlePaletteClick = () => {

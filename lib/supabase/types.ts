@@ -52,6 +52,7 @@ export interface Database {
           display_name: string | null
           avatar_url: string | null
           bio: string | null
+          background_color: string | null
         }
         Insert: {
           id: string
@@ -60,6 +61,7 @@ export interface Database {
           display_name?: string | null
           avatar_url?: string | null
           bio?: string | null
+          background_color?: string | null
         }
         Update: {
           id?: string
@@ -68,6 +70,7 @@ export interface Database {
           display_name?: string | null
           avatar_url?: string | null
           bio?: string | null
+          background_color?: string | null
         }
       }
     }
