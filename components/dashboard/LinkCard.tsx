@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
@@ -21,6 +21,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import Image from 'next/image';
 
 interface LinkCardProps {
   link: Link;
@@ -37,6 +38,16 @@ export default function LinkCard({ link, onDelete, onEdit, index }: LinkCardProp
     url: link.url,
     description: link.description
   });
+  const [favicon, setFavicon] = useState<string>('');
+
+  useEffect(() => {
+    try {
+      const url = new URL(link.url);
+      setFavicon(`https://www.google.com/s2/favicons?domain=${url.hostname}&sz=32`);
+    } catch (error) {
+      console.error('Invalid URL:', error);
+    }
+  }, [link.url]);
 
   const handleEdit = () => {
     onEdit(link.id, formData);
@@ -100,7 +111,16 @@ export default function LinkCard({ link, onDelete, onEdit, index }: LinkCardProp
             <div className="flex flex-col space-y-4">
               <div className="flex justify-between items-start">
                 <div className="flex-1">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">{link.title}</h3>
+                  <div className="flex items-center gap-2 mb-2">
+                    {favicon && (
+                      <img
+                        src={favicon}
+                        alt=""
+                        className="w-4 h-4 object-contain"
+                      />
+                    )}
+                    <h3 className="text-xl font-semibold text-gray-900">{link.title}</h3>
+                  </div>
                   <a 
                     href={link.url} 
                     target="_blank" 
