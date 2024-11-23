@@ -42,8 +42,8 @@ export default function PublicProfile({ username, displayName, avatarUrl, links 
     <div className="min-h-screen bg-[#79afd9]">
       <div className="container mx-auto px-4 py-16 max-w-4xl">
         {/* Profile Header */}
-        <Card className="mb-8">
-          <CardHeader className="text-center">
+        <div className="mb-8">
+          <div className="text-center">
             <div className="flex justify-center mb-4">
               <Avatar className="w-24 h-24">
                 <AvatarImage src={avatarUrl || undefined} alt={username} className="object-cover" />
@@ -52,13 +52,13 @@ export default function PublicProfile({ username, displayName, avatarUrl, links 
                 </AvatarFallback>
               </Avatar>
             </div>
-            <CardTitle className="text-3xl">
+            <div className="text-3xl font-semibold tracking-tight">
               {displayName && <div className="mb-1">{displayName}</div>}
               <div className="text-muted-foreground">@{username}</div>
-            </CardTitle>
-            <CardDescription>My Collection of Links</CardDescription>
-          </CardHeader>
-        </Card>
+            </div>
+            <p className="text-sm text-muted-foreground mt-2">My Collection of Links</p>
+          </div>
+        </div>
 
         {/* Links Grid */}
         <div className="pl-12 relative space-y-4">
