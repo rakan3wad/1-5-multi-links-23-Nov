@@ -18,7 +18,7 @@ export default async function UserProfilePage({
   // First, try to find user by username
   const { data: usernameProfile, error: usernameError } = await supabase
     .from("profiles")
-    .select("id, display_name, avatar_url, bio")
+    .select("id, display_name, avatar_url, bio, background_color")
     .eq("username", username)
     .single();
 
@@ -28,7 +28,7 @@ export default async function UserProfilePage({
     // If not found, try to find by email prefix
     const { data: emailProfile, error: emailError } = await supabase
       .from("profiles")
-      .select("id, display_name, avatar_url, bio")
+      .select("id, display_name, avatar_url, bio, background_color")
       .eq("email", `${username}@gmail.com`)
       .single();
 
@@ -58,6 +58,7 @@ export default async function UserProfilePage({
       avatarUrl={profile.avatar_url}
       bio={profile.bio}
       links={links || []} 
+      backgroundColor={profile.background_color}
     />
   );
 }

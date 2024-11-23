@@ -49,9 +49,22 @@ export default function DashboardLayout() {
             const savedColor = localStorage.getItem('dashboardBgColor');
             setBgColor(profile.background_color || savedColor || '#ffffff');
           }
+
+          // Fetch active links
+          const { data: activeLinks, error: linksError } = await supabase
+            .from("links")
+            .select("*")
+            .eq("user_id", user.id)
+            .eq("is_active", true)
+            .order("order_index", { ascending: true });
+
+          if (linksError) throw linksError;
+          setLinks(activeLinks || []);
         }
       } catch (error) {
         console.error('Error fetching user data:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchData();

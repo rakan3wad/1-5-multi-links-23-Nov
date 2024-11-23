@@ -14,13 +14,21 @@ interface PublicProfileProps {
   avatarUrl?: string | null;
   bio?: string | null;
   links: Link[];
+  backgroundColor?: string | null;
 }
 
 interface LinkWithFavicon extends Link {
   favicon?: string;
 }
 
-export default function PublicProfile({ username, displayName, avatarUrl, bio, links }: PublicProfileProps) {
+export default function PublicProfile({ 
+  username, 
+  displayName, 
+  avatarUrl, 
+  bio, 
+  links,
+  backgroundColor 
+}: PublicProfileProps) {
   const [linksWithFavicons, setLinksWithFavicons] = useState<LinkWithFavicon[]>([]);
 
   useEffect(() => {
@@ -40,7 +48,7 @@ export default function PublicProfile({ username, displayName, avatarUrl, bio, l
   }, [links]);
 
   return (
-    <div className="min-h-screen bg-[#79afd9]">
+    <div className="min-h-screen" style={{ backgroundColor: backgroundColor || '#79afd9' }}>
       <div className="container mx-auto px-4 py-16 max-w-4xl">
         {/* Profile Header */}
         <div className="mb-12">
