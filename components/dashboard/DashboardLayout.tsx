@@ -237,14 +237,6 @@ export default function DashboardLayout() {
               <Eye className="h-4 w-4" />
               <span className="hidden sm:inline">View Profile</span>
             </Button>
-            <Button
-              variant="outline"
-              className="flex items-center space-x-2 text-gray-700"
-              onClick={handleLogout}
-            >
-              <LogOut className="h-4 w-4" />
-              <span className="hidden sm:inline">Logout</span>
-            </Button>
           </div>
         </div>
 

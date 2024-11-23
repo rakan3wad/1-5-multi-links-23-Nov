@@ -4,6 +4,7 @@ import { IBM_Plex_Sans_Arabic } from 'next/font/google';
 import { Header } from '@/components/header';
 import AuthProvider from '@/components/auth/AuthProvider';
 import LanguageProvider from '@/components/language/LanguageProvider';
+import { LanguageToggle } from '@/components/language-toggle';
 import { Toaster } from 'sonner';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
@@ -32,6 +33,7 @@ export default function RootLayout({
           <LanguageProvider>
             <div className="relative flex min-h-screen flex-col">
               <Header />
+              <LanguageToggle />
               <div className="flex-1 pt-16">{children}</div>
             </div>
           </LanguageProvider>
