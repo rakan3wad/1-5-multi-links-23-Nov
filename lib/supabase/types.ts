@@ -53,6 +53,14 @@ export interface Database {
           avatar_url: string | null
           bio: string | null
           background_color: string | null
+          twitter_username: string | null
+          instagram_username: string | null
+          tiktok_username: string | null
+          youtube_username: string | null
+          snapchat_username: string | null
+          whatsapp_number: string | null
+          facebook_username: string | null
+          linkedin_username: string | null
         }
         Insert: {
           id: string
@@ -62,6 +70,14 @@ export interface Database {
           avatar_url?: string | null
           bio?: string | null
           background_color?: string | null
+          twitter_username?: string | null
+          instagram_username?: string | null
+          tiktok_username?: string | null
+          youtube_username?: string | null
+          snapchat_username?: string | null
+          whatsapp_number?: string | null
+          facebook_username?: string | null
+          linkedin_username?: string | null
         }
         Update: {
           id?: string
@@ -71,6 +87,14 @@ export interface Database {
           avatar_url?: string | null
           bio?: string | null
           background_color?: string | null
+          twitter_username?: string | null
+          instagram_username?: string | null
+          tiktok_username?: string | null
+          youtube_username?: string | null
+          snapchat_username?: string | null
+          whatsapp_number?: string | null
+          facebook_username?: string | null
+          linkedin_username?: string | null
         }
       }
     }

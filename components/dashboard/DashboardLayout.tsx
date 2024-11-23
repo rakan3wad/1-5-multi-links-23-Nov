@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/client";
 import AddLinkCard from "./AddLinkCard";
 import LinkCard from "./LinkCard";
 import ProfileImage from "./ProfileImage";
+import SocialLinks from "./SocialLinks";
 import { Database } from "@/lib/supabase/types";
 import { useRouter } from "next/navigation";
 import { User } from "@supabase/auth-helpers-nextjs";
@@ -26,47 +27,61 @@ export default function DashboardLayout() {
   const [bio, setBio] = useState<string | null>(null);
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [bgColor, setBgColor] = useState("#ffffff");
+  const [socialLinks, setSocialLinks] = useState({
+    twitter: null,
+    instagram: null,
+    github: null,
+    linkedin: null
+  });
   const colorInputRef = useRef<HTMLInputElement>(null);
   const supabase = createClient();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          setUser(user);
-          const { data: profile } = await supabase
-            .from('profiles')
-            .select('username, display_name, bio, background_color')
-            .eq('id', user.id)
-            .single();
+  const fetchData = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        setUser(user);
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('username, display_name, bio, background_color, twitter_username, instagram_username, github_username, linkedin_username')
+          .eq('id', user.id)
+          .single();
 
-          if (profile) {
-            setUsername(profile.username);
-            setDisplayName(profile.display_name);
-            setBio(profile.bio);
-            // Set background color from profile, fallback to localStorage or default white
-            const savedColor = localStorage.getItem('dashboardBgColor');
-            setBgColor(profile.background_color || savedColor || '#ffffff');
-          }
-
-          // Fetch active links
-          const { data: activeLinks, error: linksError } = await supabase
-            .from("links")
-            .select("*")
-            .eq("user_id", user.id)
-            .eq("is_active", true)
-            .order("order_index", { ascending: true });
-
-          if (linksError) throw linksError;
-          setLinks(activeLinks || []);
+        if (profile) {
+          setUsername(profile.username);
+          setDisplayName(profile.display_name);
+          setBio(profile.bio);
+          // Set background color from profile, fallback to localStorage or default white
+          const savedColor = localStorage.getItem('dashboardBgColor');
+          setBgColor(profile.background_color || savedColor || '#ffffff');
+          // Set social links
+          setSocialLinks({
+            twitter: profile.twitter_username,
+            instagram: profile.instagram_username,
+            github: profile.github_username,
+            linkedin: profile.linkedin_username
+          });
         }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-      } finally {
-        setIsLoading(false);
+
+        // Fetch active links
+        const { data: activeLinks, error: linksError } = await supabase
+          .from("links")
+          .select("*")
+          .eq("user_id", user.id)
+          .eq("is_active", true)
+          .order("order_index", { ascending: true });
+
+        if (linksError) throw linksError;
+        setLinks(activeLinks || []);
       }
-    };
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchData();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -286,6 +301,18 @@ export default function DashboardLayout() {
                 </div>
               )}
             </div>
+
+            {/* Social Links Section */}
+            {user && (
+              <SocialLinks
+                twitterUsername={socialLinks.twitter}
+                instagramUsername={socialLinks.instagram}
+                githubUsername={socialLinks.github}
+                linkedinUsername={socialLinks.linkedin}
+                userId={user.id}
+                onUpdate={fetchData}
+              />
+            )}
           </div>
           <div className="flex items-center space-x-4">
             <Button
