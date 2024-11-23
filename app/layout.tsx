@@ -30,8 +30,12 @@ export const metadata = {
 
 export default function RootLayout({
   children,
+  auth,
+  modal,
 }: {
   children: React.ReactNode;
+  auth: React.ReactNode;
+  modal: React.ReactNode;
 }) {
   return (
     <html lang="en" dir="rtl" className={`${inter.variable} ${tajawal.variable} ${ibmPlexSansArabic.variable}`}>
@@ -42,7 +46,11 @@ export default function RootLayout({
             <div className="relative flex min-h-screen flex-col">
               <Header />
               <LanguageToggle />
-              <div className="flex-1 pt-16">{children}</div>
+              <div className="flex-1 pt-16">
+                {auth}
+                {modal}
+                {children}
+              </div>
             </div>
           </LanguageProvider>
         </AuthProvider>

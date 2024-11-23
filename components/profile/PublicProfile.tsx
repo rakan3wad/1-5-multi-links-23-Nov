@@ -12,7 +12,6 @@ interface PublicProfileProps {
   username: string;
   displayName?: string | null;
   avatarUrl?: string | null;
-  bio?: string | null;
   links: Link[];
 }
 
@@ -20,7 +19,7 @@ interface LinkWithFavicon extends Link {
   favicon?: string;
 }
 
-export default function PublicProfile({ username, displayName, avatarUrl, bio, links }: PublicProfileProps) {
+export default function PublicProfile({ username, displayName, avatarUrl, links }: PublicProfileProps) {
   const [linksWithFavicons, setLinksWithFavicons] = useState<LinkWithFavicon[]>([]);
 
   useEffect(() => {
@@ -66,11 +65,6 @@ export default function PublicProfile({ username, displayName, avatarUrl, bio, l
                 </h1>
               )}
               <div className="text-lg text-gray-800 mb-3 font-tajawal">@{username}</div>
-              {bio && (
-                <p className="text-gray-800 max-w-md mx-auto font-tajawal">
-                  {bio}
-                </p>
-              )}
             </div>
           </div>
         </div>

@@ -13,29 +13,20 @@ export default async function UserProfilePage({
   const { username } = params;
   const supabase = createServerClient();
 
-  let profile: Profile | null = null;
+  console.log('Fetching profile for username:', username);
 
-  // First, try to find user by username
-  const { data: usernameProfile, error: usernameError } = await supabase
+  // Get profile by username
+  const { data: profile, error: profileError } = await supabase
     .from("profiles")
-    .select("id, display_name, avatar_url, bio")
-    .eq("username", username)
+    .select("id, username, display_name, avatar_url")
+    .eq("username", username.toLowerCase())
     .single();
 
-  if (usernameProfile) {
-    profile = usernameProfile;
-  } else {
-    // If not found, try to find by email prefix
-    const { data: emailProfile, error: emailError } = await supabase
-      .from("profiles")
-      .select("id, display_name, avatar_url, bio")
-      .eq("email", `${username}@gmail.com`)
-      .single();
-
-    if (emailProfile) {
-      profile = emailProfile;
-    }
+  if (profileError) {
+    console.error('Error fetching profile:', profileError);
   }
+
+  console.log('Profile data:', profile);
 
   // If no profile found, show 404
   if (!profile) {
@@ -44,19 +35,24 @@ export default async function UserProfilePage({
   }
 
   // Fetch user's links
-  const { data: links } = await supabase
+  const { data: links, error: linksError } = await supabase
     .from("links")
     .select("*")
     .eq("user_id", profile.id)
     .eq("is_active", true)
     .order("order_index", { ascending: true });
 
+  if (linksError) {
+    console.error('Error fetching links:', linksError);
+  }
+
+  console.log('Links data:', links);
+
   return (
     <PublicProfile 
-      username={username} 
+      username={profile.username}
       displayName={profile.display_name}
       avatarUrl={profile.avatar_url}
-      bio={profile.bio}
       links={links || []} 
     />
   );

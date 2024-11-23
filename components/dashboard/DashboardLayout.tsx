@@ -35,39 +35,49 @@ export default function DashboardLayout() {
         const { data: { session } } = await supabase.auth.getSession();
         
         if (!session?.user) {
+          console.log('No session found, redirecting to auth');
           router.replace("/auth");
           return;
         }
 
+        console.log('Session user:', session.user);
         setUser(session.user);
 
         // Fetch profile data
-        const { data: profileData } = await supabase
+        const { data: profileData, error: profileError } = await supabase
           .from("profiles")
           .select("username, display_name, bio")
           .eq("id", session.user.id)
           .single();
+
+        console.log('Profile data:', profileData);
+        console.log('Profile error:', profileError);
 
         if (profileData) {
           setUsername(profileData.username);
           setDisplayName(profileData.display_name);
           setBio(profileData.bio);
         } else {
-          // If username is not set, update it with email prefix
-          const defaultUsername = session.user.email?.split('@')[0];
+          // If profile doesn't exist, create it with email prefix as username
+          const defaultUsername = session.user.email?.split('@')[0].toLowerCase();
+          console.log('Creating new profile with username:', defaultUsername);
+          
           if (defaultUsername) {
-            const { data: updatedProfile, error: updateError } = await supabase
+            const { data: newProfile, error: insertError } = await supabase
               .from("profiles")
-              .update({ 
+              .insert({ 
+                id: session.user.id,
                 username: defaultUsername,
                 updated_at: new Date().toISOString()
               })
-              .eq("id", session.user.id)
               .select("username")
               .single();
 
-            if (!updateError && updatedProfile) {
-              setUsername(updatedProfile.username);
+            console.log('New profile:', newProfile);
+            console.log('Insert error:', insertError);
+
+            if (!insertError && newProfile) {
+              setUsername(newProfile.username);
             }
           }
         }
@@ -254,10 +264,14 @@ export default function DashboardLayout() {
       <div className="container mx-auto px-4 max-w-3xl">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-center mb-8 space-y-4 sm:space-y-0">
-          <div className="flex flex-col items-center justify-center mb-6">
+          <div className="flex flex-col items-center">
             <ProfileImage user={user} onImageUpdate={() => {}} />
-            <h2 className="text-xl font-semibold mt-4 font-tajawal">{displayName}</h2>
-            <p className="text-gray-900 font-tajawal">@{username}</p>
+            <div className="mt-4 text-center">
+              <p className="text-gray-900 font-tajawal">{username ? `@${username}` : 'Loading...'}</p>
+              {displayName && (
+                <p className="text-gray-600">{displayName}</p>
+              )}
+            </div>
             <div className="relative mt-2 group">
               {isEditingBio ? (
                 <div className="flex items-center gap-2">

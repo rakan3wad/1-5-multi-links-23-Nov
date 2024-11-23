@@ -4,7 +4,6 @@ import ParticlesBackground from "@/components/ParticlesBackground";
 import TypewriterEffect from "@/components/TypewriterEffect";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AuthForms } from "@/components/auth-forms";
 import Link from "next/link";
 
 export default function Home() {
@@ -18,49 +17,62 @@ export default function Home() {
             {/* Left side: Hero content */}
             <div className="flex flex-col justify-center space-y-4 text-center lg:text-left">
               <div className="space-y-2">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
-                  Multi Links
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none font-tajawal">
+                  مرحباً بك في متعدد الروابط
                 </h1>
                 <div className="h-16 text-xl font-light text-muted-foreground sm:text-2xl">
                   <TypewriterEffect 
                     strings={[
-                      "Share all your important links in one place",
-                      "Create your personal profile",
-                      "Customize your links",
-                      "Share with the world"
+                      "شارك جميع روابطك في مكان واحد",
+                      "أنشئ صفحتك الشخصية",
+                      "خصص روابطك",
+                      "شارك مع العالم"
                     ]} 
                   />
                 </div>
               </div>
               <div className="mx-auto max-w-[700px] space-y-4 lg:mx-0">
-                <p className="text-muted-foreground sm:text-xl">
-                  Create your personalized profile and share all your important links with your audience.
-                  Simple, fast, and beautiful.
+                <p className="text-muted-foreground sm:text-xl font-tajawal">
+                  أنشئ صفحتك الشخصية وشارك جميع روابطك مع جمهورك. بسيط، سريع، وجميل.
                 </p>
               </div>
             </div>
 
-            {/* Right side: Auth form */}
+            {/* Right side: Auth Buttons */}
             <div className="mx-auto w-full max-w-sm space-y-4">
-              <AuthForms />
-              <p className="px-8 text-center text-sm text-muted-foreground">
-                By clicking continue, you agree to our{" "}
-                <a href="/terms" className="underline underline-offset-4 hover:text-primary">
-                  Terms of Service
-                </a>{" "}
-                and{" "}
-                <a href="/privacy" className="underline underline-offset-4 hover:text-primary">
-                  Privacy Policy
-                </a>
-                .
-              </p>
-              <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-                <Link href="/demo">
-                  <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                    View Demo
+              <div className="flex flex-col sm:flex-row gap-4 w-full max-w-sm">
+                <Link href="/auth/signup" className="w-full">
+                  <Button size="lg" className="w-full font-tajawal">
+                    إنشاء حساب
+                  </Button>
+                </Link>
+                <Link href="/auth/signin" className="w-full">
+                  <Button variant="outline" size="lg" className="w-full font-tajawal">
+                    تسجيل الدخول
                   </Button>
                 </Link>
               </div>
+
+              {/* Demo Button */}
+              <div className="mt-4">
+                <Link href="/demo">
+                  <Button variant="ghost" size="lg" className="font-tajawal">
+                    عرض توضيحي
+                  </Button>
+                </Link>
+              </div>
+
+              {/* Terms and Privacy */}
+              <p className="px-8 text-center text-sm text-muted-foreground font-tajawal">
+                من خلال النقر على إنشاء حساب، أنت توافق على{" "}
+                <Link href="/terms" className="underline underline-offset-4 hover:text-primary">
+                  شروط الخدمة
+                </Link>{" "}
+                و{" "}
+                <Link href="/privacy" className="underline underline-offset-4 hover:text-primary">
+                  سياسة الخصوصية
+                </Link>
+              </p>
             </div>
           </div>
         </div>
