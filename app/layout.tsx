@@ -11,9 +11,10 @@ import { Toaster } from 'sonner';
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
 const tajawal = Tajawal({
-  weight: ['400', '500', '700'],
+  weight: ['200', '300', '400', '500', '700', '800', '900'],
   subsets: ['arabic'],
   variable: '--font-tajawal',
+  display: 'swap',
 });
 
 const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({
@@ -33,8 +34,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${tajawal.variable} ${ibmPlexSansArabic.variable}`}>
-      <body>
+    <html lang="en" dir="rtl" className={`${inter.variable} ${tajawal.variable} ${ibmPlexSansArabic.variable}`}>
+      <body className="font-tajawal">
         <Toaster richColors position="top-center" />
         <AuthProvider>
           <LanguageProvider>
