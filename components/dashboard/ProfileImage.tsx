@@ -159,7 +159,7 @@ export default function ProfileImage({ user, onImageUpdate }: ProfileImageProps)
       
       <label
         htmlFor="profile-image"
-        className="absolute inset-0 flex items-center justify-center bg-black/50 text-white opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+        className={`absolute inset-0 flex items-center justify-center bg-black/50 text-white transition-opacity cursor-pointer ${isUploading ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
       >
         {isUploading ? (
           <Loader2 className="w-6 h-6 animate-spin" />
