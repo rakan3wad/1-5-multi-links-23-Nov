@@ -20,6 +20,7 @@ const config: Config = {
       fontFamily: {
         inter: ['var(--font-inter)'],
         arabic: ['var(--font-arabic)'],
+        tajawal: ['var(--font-tajawal)'],
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

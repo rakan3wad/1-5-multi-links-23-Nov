@@ -1,5 +1,6 @@
 import './globals.css';
 import { Inter } from 'next/font/google';
+import { Tajawal } from 'next/font/google';
 import { IBM_Plex_Sans_Arabic } from 'next/font/google';
 import { Header } from '@/components/header';
 import AuthProvider from '@/components/auth/AuthProvider';
@@ -8,6 +9,12 @@ import { LanguageToggle } from '@/components/language-toggle';
 import { Toaster } from 'sonner';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
+
+const tajawal = Tajawal({
+  weight: ['400', '500', '700'],
+  subsets: ['arabic'],
+  variable: '--font-tajawal',
+});
 
 const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({
   weight: ['400'],
@@ -26,7 +33,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${ibmPlexSansArabic.variable}`}>
+    <html lang="en" className={`${inter.variable} ${tajawal.variable} ${ibmPlexSansArabic.variable}`}>
       <body>
         <Toaster richColors position="top-center" />
         <AuthProvider>
